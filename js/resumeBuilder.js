@@ -26,20 +26,20 @@ var bio = {
 var education = {
 	"schools":[
 		{
-			"name":"University of Hong Kong",
+			"name":"The University of Hong Kong",
 			"location":"Hong Kong",
 			"degree":"Master",
-			"majors":["Computer Science"],
-			"dates":"2017-06-20",
-			"url":""
+			"major":"Computer Science",
+			"dates":"2015/09 - 2017/06",
+			"url":"http://www.hku.hk/"
 		},
 		{
 			"name":"Sun Yat-sen University",
 			"location":"Guangzhou",
 			"degree":"Bachelor",
-			"majors":["Digital Media Arts"],
-			"dates":"2013-06-20",
-			"url":""
+			"major":"Digital Media Arts",
+			"dates":"2008/09 - 2013/06",
+			"url":"http://www.sysu.edu.cn/"
 		}
 	],
 	"onlineCourses":[
@@ -75,9 +75,15 @@ var work = {
 var projects = {
 	"projects":[
 		{
-			"title":"",
-			"dates":"",
-			"description":"",
+			"title":"Distributed data analysis system based on Stack Overflow data",
+			"dates":"2016/03-2016/05",
+			"description":"Based on Map-Reduce in Hadoop, analysis 10Gb data of Stack Overflow, use Elasticsearch as search engine, Logstash as data transport, Kibana as data display.",
+			"images":[]
+		},
+		{
+			"title":"3D multiple players card combat game “Evolution”",
+			"dates":"2016/05-2016/08",
+			"description":"	Use Unity as client, and use Photon engine as server, it is card combat game like Hearth Stone. We implemented it with design patterns such as MVC framework, generic, event center and singleton.",
 			"images":[]
 		}
 	]
@@ -87,7 +93,7 @@ function appendToResume(section, html, data) {
     $(section).append( html.replace("%data%", data) );
 }
 
-function addBio () {
+function displayBio () {
 	$("#header").prepend(HTMLheaderRole.replace("%data%", bio.role) );
 	$("#header").prepend(HTMLheaderName.replace("%data%", bio.name) );
 
@@ -100,22 +106,45 @@ function addBio () {
 	appendToResume("#header",HTMLwelcomeMsg,bio.welcomeMessage);
 
 	$("#header").append(HTMLskillsStart);
-	for(i in bio.skills){
-		appendToResume("#skills", HTMLskills,bio.skills[i] );
-	}
+	bio.skills.forEach(function(skill){
+		appendToResume("#skills", HTMLskills,skill);
+	});
+}
+function displayEducation () {
+	education.schools.forEach(function(school){
+		$("#education").append(HTMLschoolStart);
+		var formatedSchoolName = HTMLschoolName.replace("%data%", school.name);
+		formatedSchoolName = formatedSchoolName.replace("#", school.url);
+		var formatedSchoolDegree = HTMLschoolDegree.replace("%data%", school.degree);
+		$(".education-entry:last").append(formatedSchoolName+formatedSchoolDegree);
+		appendToResume(".education-entry:last", HTMLschoolDates,school.dates );
+		appendToResume(".education-entry:last", HTMLschoolMajor,school.major );
+	});
 }
 
-function addWork () {
-	for(i in work.jobs){
+function displayWork () {
+	work.jobs.forEach(function(job){
 		$("#workExperience").append(HTMLworkStart);
-		var formatedEmployer = HTMLworkEmployer.replace("%data%", work.jobs[i].employer);
-		formatedEmployer = formatedEmployer.replace("#", work.jobs[i].url);
-		var formatedTile = HTMLworkTitle.replace("%data%", work.jobs[i].title);
+		var formatedEmployer = HTMLworkEmployer.replace("%data%", job.employer);
+		formatedEmployer = formatedEmployer.replace("#", job.url);
+		var formatedTile = HTMLworkTitle.replace("%data%", job.title);
 		$(".work-entry:last").append(formatedEmployer+formatedTile);
-		appendToResume(".work-entry:last", HTMLworkDates,work.jobs[i].dates );
-		appendToResume(".work-entry:last", HTMLworkDescription,work.jobs[i].description );
-	}
+		appendToResume(".work-entry:last", HTMLworkDates,job.dates );
+		appendToResume(".work-entry:last", HTMLworkDescription,job.description );
+	});
 }
 
-addBio();
-addWork();
+function displayProject () {
+	projects.projects.forEach(function(project){
+		$("#projects").append(HTMLprojectStart);
+		var formatedTile = HTMLprojectTitle.replace("%data%", project.title);
+		$(".project-entry:last").append(formatedTile);
+		appendToResume(".project-entry:last", HTMLprojectDates,project.dates );
+		appendToResume(".project-entry:last", HTMLprojectDescription,project.description );
+	});
+}
+
+displayBio();
+displayEducation();
+displayWork();
+displayProject();
